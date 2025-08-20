@@ -1,0 +1,23 @@
+{
+  "app": {
+    "name": "Canadian Weather CLI",
+    "version": "1.0.0",
+    "description": "CLI weather app for Canadian postal codes"
+  },
+  "api": {
+    "provider": "wttr.in",
+    "base_url": "https://wttr.in",
+    "timeout": 10,
+    "format": "j1",
+    "language": "en"
+  },
+  "display": {
+    "use_emoji": true,
+    "temperature_units": ["celsius", "fahrenheit"],
+    "show_forecast": true,
+    "show_astronomy": true
+  },
+  "validation": {
+    "canadian_postal_pattern": "^[ABCEGHJ-NPRSTVXY]\\d[ABCEGHJ-NPRSTV-Z]\\d[ABCEGHJ-NPRSTV-Z]\\d$"
+  }
+}

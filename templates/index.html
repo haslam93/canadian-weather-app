@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌤️ Canadian Weather App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="fas fa-cloud-sun me-2"></i>
+                    Canadian Weather App
+                </a>
+                <span class="navbar-text">
+                    Real-time weather for Canadian postal codes
+                </span>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- Main Content -->
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Search Section -->
+                    <div class="card shadow-lg mb-4">
+                        <div class="card-header bg-gradient text-white text-center">
+                            <h2 class="mb-0">
+                                <i class="fas fa-search me-2"></i>
+                                Get Weather Information
+                            </h2>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="weatherForm">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="postalCode" class="form-label fw-bold">
+                                                <i class="fas fa-map-marker-alt me-1"></i>
+                                                Canadian Postal Code
+                                            </label>
+                                            <input 
+                                                type="text" 
+                                                class="form-control form-control-lg" 
+                                                id="postalCode" 
+                                                placeholder="e.g., K1A 0A6 or M5V3A8"
+                                                maxlength="7"
+                                                required
+                                            >
+                                            <div class="form-text">
+                                                Format: A1A 1A1 or A1A1A1 (e.g., Ottawa: K1A 0A6, Toronto: M5V 3A8)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">&nbsp;</label>
+                                            <button type="submit" class="btn btn-primary btn-lg w-100" id="searchBtn">
+                                                <i class="fas fa-search me-2"></i>
+                                                Get Weather
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Loading Spinner -->
+                    <div id="loading" class="text-center mb-4" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Fetching weather data...</p>
+                    </div>
+
+                    <!-- Error Alert -->
+                    <div id="errorAlert" class="alert alert-danger alert-dismissible fade" role="alert" style="display: none;">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span id="errorMessage"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <!-- Weather Results -->
+                    <div id="weatherResults" style="display: none;">
+                        <!-- Current Weather Card -->
+                        <div class="card shadow-lg mb-4">
+                            <div class="card-header bg-info text-white">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-thermometer-half me-2"></i>
+                                    Current Weather
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h4 id="locationName" class="text-primary mb-3"></h4>
+                                        <div class="weather-main text-center mb-4">
+                                            <div class="temperature-display">
+                                                <span id="currentTemp" class="display-1 fw-bold text-primary"></span>
+                                                <span class="h2 text-muted">°C</span>
+                                            </div>
+                                            <p id="weatherCondition" class="h5 text-muted mb-0"></p>
+                                            <p class="text-muted">
+                                                Feels like <span id="feelsLike"></span>°C
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="weather-details">
+                                            <div class="row g-3">
+                                                <div class="col-6">
+                                                    <div class="detail-item">
+                                                        <i class="fas fa-wind text-info"></i>
+                                                        <strong>Wind</strong>
+                                                        <span id="windInfo"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="detail-item">
+                                                        <i class="fas fa-tint text-info"></i>
+                                                        <strong>Humidity</strong>
+                                                        <span id="humidity"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="detail-item">
+                                                        <i class="fas fa-eye text-info"></i>
+                                                        <strong>Visibility</strong>
+                                                        <span id="visibility"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="detail-item">
+                                                        <i class="fas fa-cloud text-info"></i>
+                                                        <strong>Cloud Cover</strong>
+                                                        <span id="cloudCover"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Forecast Card -->
+                        <div class="card shadow-lg mb-4" id="forecastCard">
+                            <div class="card-header bg-warning text-dark">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-calendar-day me-2"></i>
+                                    Today's Forecast
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-md-3">
+                                        <div class="forecast-item">
+                                            <i class="fas fa-temperature-high text-danger"></i>
+                                            <h5>High</h5>
+                                            <span id="maxTemp" class="h4 text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="forecast-item">
+                                            <i class="fas fa-temperature-low text-primary"></i>
+                                            <h5>Low</h5>
+                                            <span id="minTemp" class="h4 text-primary"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="forecast-item">
+                                            <i class="fas fa-sun text-warning"></i>
+                                            <h5>Sunrise</h5>
+                                            <span id="sunrise" class="h6"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="forecast-item">
+                                            <i class="fas fa-moon text-secondary"></i>
+                                            <h5>Sunset</h5>
+                                            <span id="sunset" class="h6"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Examples Section -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                Example Postal Codes
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-2">
+                                    <button class="btn btn-outline-primary btn-sm w-100 example-btn" data-postal="K1A0A6">
+                                        K1A 0A6 (Ottawa, ON)
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button class="btn btn-outline-primary btn-sm w-100 example-btn" data-postal="M5V3A8">
+                                        M5V 3A8 (Toronto, ON)
+                                    </button>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <button class="btn btn-outline-primary btn-sm w-100 example-btn" data-postal="V6B2W9">
+                                        V6B 2W9 (Vancouver, BC)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-light text-center py-3 mt-5">
+            <div class="container">
+                <p class="text-muted mb-0">
+                    <i class="fas fa-code me-1"></i>
+                    Canadian Weather App - Built with Flask & Bootstrap
+                    <i class="fas fa-heart text-danger mx-2"></i>
+                    Using free wttr.in API
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
