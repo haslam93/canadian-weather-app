@@ -37,7 +37,7 @@ def get_weather():
         if not weather_app.validate_postal_code(postal_code):
             return jsonify({
                 'success': False,
-                'error': 'Invalid Canadian postal code format. Please use format: A1A 1A1 or A1A1A1'
+                'error': 'Invalid postal code format. Please use Canadian format (A1A 1A1) or US format (12345 or 12345-6789)'
             }), 400
         
         # Get weather data

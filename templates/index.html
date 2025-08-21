@@ -42,18 +42,18 @@
                                         <div class="mb-3">
                                             <label for="postalCode" class="form-label fw-bold">
                                                 <i class="fas fa-map-marker-alt me-1"></i>
-                                                Canadian Postal Code
+                                                Postal Code / Zip Code
                                             </label>
                                             <input 
                                                 type="text" 
                                                 class="form-control form-control-lg" 
                                                 id="postalCode" 
-                                                placeholder="e.g., K1A 0A6 or M5V3A8"
-                                                maxlength="7"
+                                                placeholder="e.g., K1A 0A6, M5V3A8, 10001, 90210"
+                                                maxlength="12"
                                                 required
                                             >
                                             <div class="form-text">
-                                                Format: A1A 1A1 or A1A1A1 (e.g., Ottawa: K1A 0A6, Toronto: M5V 3A8)
+                                                Canadian: A1A 1A1 (e.g., K1A 0A6) | US: 12345 or 12345-6789 (e.g., 10001, 90210-1234)
                                             </div>
                                         </div>
                                     </div>
@@ -197,24 +197,29 @@
                         <div class="card-header bg-light">
                             <h5 class="mb-0">
                                 <i class="fas fa-lightbulb me-2"></i>
-                                Example Postal Codes
+                                Example Codes
                             </h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-4 mb-2">
+                                <div class="col-md-3 mb-2">
                                     <button class="btn btn-outline-primary btn-sm w-100 example-btn" data-postal="K1A0A6">
                                         K1A 0A6 (Ottawa, ON)
                                     </button>
                                 </div>
-                                <div class="col-md-4 mb-2">
+                                <div class="col-md-3 mb-2">
                                     <button class="btn btn-outline-primary btn-sm w-100 example-btn" data-postal="M5V3A8">
                                         M5V 3A8 (Toronto, ON)
                                     </button>
                                 </div>
-                                <div class="col-md-4 mb-2">
-                                    <button class="btn btn-outline-primary btn-sm w-100 example-btn" data-postal="V6B2W9">
-                                        V6B 2W9 (Vancouver, BC)
+                                <div class="col-md-3 mb-2">
+                                    <button class="btn btn-outline-success btn-sm w-100 example-btn" data-postal="10001">
+                                        10001 (New York, NY)
+                                    </button>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <button class="btn btn-outline-success btn-sm w-100 example-btn" data-postal="90210">
+                                        90210 (Beverly Hills, CA)
                                     </button>
                                 </div>
                             </div>
@@ -229,7 +234,7 @@
             <div class="container">
                 <p class="text-muted mb-0">
                     <i class="fas fa-code me-1"></i>
-                    Canadian Weather App - Built with Flask & Bootstrap
+                    Weather App - Canadian & US Support - Built with Flask & Bootstrap
                     <i class="fas fa-heart text-danger mx-2"></i>
                     Using free wttr.in API
                 </p>

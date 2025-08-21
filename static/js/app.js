@@ -31,18 +31,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Real-time postal code validation and formatting
     postalCodeInput.addEventListener('input', function() {
-        let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        let value = this.value.trim();
         
-        // Format as A1A 1A1
-        if (value.length > 3) {
-            value = value.substring(0, 3) + ' ' + value.substring(3, 6);
+        // Detect if input looks like US zip code (numbers only or numbers with dash)
+        const isUSZip = /^[\d\s-]*$/.test(value);
+        
+        if (isUSZip) {
+            // Handle US zip code formatting
+            value = value.replace(/[^\d-]/g, ''); // Keep only digits and dashes
+            
+            // Format as 12345-6789 if 9 digits
+            if (value.length === 9 && !value.includes('-')) {
+                value = value.substring(0, 5) + '-' + value.substring(5);
+            }
+            // Limit to valid zip code lengths
+            if (value.includes('-')) {
+                const parts = value.split('-');
+                if (parts.length === 2) {
+                    value = parts[0].substring(0, 5) + '-' + parts[1].substring(0, 4);
+                }
+            } else {
+                value = value.substring(0, 5);
+            }
+        } else {
+            // Handle Canadian postal code formatting
+            value = value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            
+            // Format as A1A 1A1
+            if (value.length > 3) {
+                value = value.substring(0, 3) + ' ' + value.substring(3, 6);
+            }
         }
         
         this.value = value;
         
         // Visual validation feedback
-        if (value.length >= 6) {
-            validatePostalCode(value.replace(' ', ''));
+        const minLength = isUSZip ? 5 : 6;
+        if (value.replace(/[\s-]/g, '').length >= minLength) {
+            validatePostalCode(value);
         } else {
             this.classList.remove('is-valid', 'is-invalid');
         }
